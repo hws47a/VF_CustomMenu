@@ -1,0 +1,7 @@
+#copy app/design/frontend/base/default/menu/navigation.phtml to your theme
+
+#change this string
+<block type="catalog/navigation" name="catalog.topnav" template="catalog/navigation/top.phtml"/>
+#to
+<block type="menu/navigation" name="catalog.topnav" template="menu/navigation.phtml"/>
+#in path/to/current/theme/layout/catalog.xml
