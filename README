@@ -3,4 +3,8 @@ A custom magento menu
 Replace generated magento menu with own custom menu.
 Use admin page to add menu items (name, title, link, position)
 
+Also you can show in menu popup links to layered navigation for some attribute
+You can choose attribute and default category. In menu popup you will see 
+all attribute options that you see in layered navigation for this category
+
 Read about installation in INSTALL file
