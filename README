@@ -1,5 +1,6 @@
 A custom magento menu
 
-Development in progress...
+Replace generated magento menu with own custom menu.
+Use admin page to add menu items (name, title, link, position)
 
 Read about installation in INSTALL file
