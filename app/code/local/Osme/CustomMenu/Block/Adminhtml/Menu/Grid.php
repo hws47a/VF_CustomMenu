@@ -90,6 +90,15 @@ class Osme_CustomMenu_Block_Adminhtml_Menu_Grid extends Mage_Adminhtml_Block_Wid
             'index'     =>  'title'
         ));
 
+        $this->addColumn('source_attribute', array(
+            'header'    =>  $this->__('Source Attribute'),
+            'align'     =>  'left',
+            'width'     =>  '50px',
+            'index'     =>  'source_attribute',
+            'type'      =>  'options',
+            'options'    =>  Mage::getModel('menu/attribute')->getOptions()
+        ));
+
         $this->addColumn('position', array(
             'header'    =>  $this->__('Position'),
             'align'     =>  'left',

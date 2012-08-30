@@ -1,9 +1,11 @@
-<?php 
+<?php
 /**
  * Osme extension for Magento
  *
+ * Add source_attribute column to menu table
+ *
  * NOTICE OF LICENSE
- * 
+ *
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is bundled with this package in the file LICENSE.txt.
  * It is also available through the world-wide-web at this URL:
@@ -23,24 +25,16 @@
  */
 
 /**
- * Menu grid container
- *
- * @category   Osme
- * @package    Osme_CustomMenu
- * @subpackage Block
- * @author     Vladimir Fishchenko <vladimir.fishchenko@gmail.com>
+ * @var $this Mage_Core_Model_Resource_Setup
  */
-class Osme_CustomMenu_Block_Adminhtml_Menu extends Mage_Adminhtml_Block_Widget_Grid_Container
-{
-    /**
-     * Init grid container
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->_controller = 'adminhtml_menu';
-        $this->_blockGroup = 'menu';
-        $this->_headerText = $this->__('Custom Menu Items');
-        $this->_addButtonLabel = $this->__('Add Menu Item');
-    }
-}
+
+$installer = $this;
+$installer->startSetup();
+
+$installer->getConnection()->addColumn(
+    $installer->getTable('menu/menu'),
+    'source_attribute',
+    'varchar(255) not null default \'\''
+);
+
+$installer->endSetup();

@@ -82,6 +82,31 @@ class Osme_CustomMenu_Block_Adminhtml_Menu_Edit_Form extends Mage_Adminhtml_Bloc
             'note'      => $this->__('Default 0')
         ));
 
+        $fieldSet->addField('source_attribute', 'select', array(
+            'label'     => $this->__('Source Attribute'),
+            'name'      => 'source_attribute',
+            'note'      => $this->__('If you select attribute, '
+                . 'you will see dropdown with its values for layered navigation'),
+            'values'    => Mage::getModel('menu/attribute')->getSourceAttributes()
+        ));
+
+
+        /** @var $categories Mage_Catalog_Model_Resource_Eav_Mysql4_Category_Collection */
+        $categories = Mage::getModel('catalog/category')->getCollection();
+        $categories->addAttributeToSelect('name');
+        $values = array(array('label' => '', 'value' => ''));
+        foreach ($categories as $_category) {
+            $catId = $_category->getId();
+            $values[] = array('value' => $catId, 'label' => $_category->getName() . " ($catId)");
+        }
+
+        $fieldSet->addField('default_category', 'select', array(
+            'label'     => $this->__('Default Category'),
+            'name'      => 'default_category',
+            'note'      => $this->__('Custom default category'),
+            'values'    => $values
+        ));
+
         $data = Mage::registry('current_menu');
         if ($data) {
             $form->setValues($data->getData());

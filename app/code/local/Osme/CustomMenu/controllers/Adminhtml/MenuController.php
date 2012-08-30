@@ -132,6 +132,7 @@ class Osme_CustomMenu_Adminhtml_MenuController extends Mage_Adminhtml_Controller
                 }
 
                 $this->_getSession()->addSuccess($this->__('Menu Item was successfully saved.'));
+                Mage::app()->getCacheInstance()->invalidateType(Mage_Core_Block_Abstract::CACHE_GROUP);
                 $this->_getSession()->setFormData(false);
 
             } catch (Mage_Core_Exception $e) {
@@ -171,6 +172,7 @@ class Osme_CustomMenu_Adminhtml_MenuController extends Mage_Adminhtml_Controller
                 $model->setId($menuId);
                 $model->delete();
                 $this->_getSession()->addSuccess($this->__('Menu Item has been deleted.'));
+                Mage::app()->getCacheInstance()->invalidateType(Mage_Core_Block_Abstract::CACHE_GROUP);
                 $this->_redirect('*/*/');
                 return;
             }
@@ -217,6 +219,7 @@ class Osme_CustomMenu_Adminhtml_MenuController extends Mage_Adminhtml_Controller
                         'Total of %d record(s) were deleted.', count($menuIds)
                     )
                 );
+                Mage::app()->getCacheInstance()->invalidateType(Mage_Core_Block_Abstract::CACHE_GROUP);
             } catch (Exception $e) {
                 $this->_getSession()->addError($e->getMessage());
             }

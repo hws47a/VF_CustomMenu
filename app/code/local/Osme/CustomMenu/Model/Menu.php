@@ -25,6 +25,11 @@
 /**
  * Menu model
  *
+ * @method string getSourceAttribute
+ * @method string getUrl
+ * @method string getTitle
+ * @method string getLabel
+ *
  * @category   Osme
  * @package    Osme_CustomMenu
  * @subpackage Model
@@ -40,5 +45,19 @@ class Osme_CustomMenu_Model_Menu extends Mage_Core_Model_Abstract
     protected function _construct()
     {
         $this->_init('menu/menu');
+    }
+
+    /**
+     * Get default category id
+     *
+     * @return int
+     */
+    public function getDefaultCategoryId()
+    {
+        $category = Mage::app()->getStore()->getRootCategoryId();
+        if ($this->getDefaultCategory()) {
+            $category = intval($this->getDefaultCategory());
+        }
+        return $category;
     }
 }

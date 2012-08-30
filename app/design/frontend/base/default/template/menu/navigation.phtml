@@ -45,6 +45,11 @@ $i = 0;
             <a title="<?php echo $this->escapeHtml($_menuItem->getTitle()) ?>" href="<?php echo $this->escapeUrl($this->getItemUrl($_menuItem)) ?>" class="level-top">
                 <span><?php echo $this->escapeHtml($_menuItem->getLabel()) ?></span>
             </a>
+            <?php if ($this->getDynamicBlock($_menuItem)): ?>
+            <div class="menuPopup">
+                <?php echo $this->getDynamicBlock($_menuItem) ?>
+            </div>
+            <?php endif ?>
         </li>
         <?php endforeach ?>
     </ul>
