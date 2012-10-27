@@ -5,3 +5,12 @@
 #to
 <block type="menu/navigation" name="catalog.topnav" template="menu/navigation.phtml"/>
 #in path/to/current/theme/layout/catalog.xml
+
+
+OR (for new magento)
+
+#change this string
+<block type="page/html_topmenu" name="catalog.topnav" template="page/html/topmenu.phtml"/>
+#to
+<block type="menu/navigation" name="catalog.topnav" template="menu/navigation.phtml"/>
+#in path/to/current/theme/layout/page.xml
