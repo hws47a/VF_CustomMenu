@@ -1,7 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?php
 /**
- * Vladimir Fishchenko extension for Magento
+ * VF extension for Magento
+ * 
+ * Add table for custom menu
  *
  * NOTICE OF LICENSE
  *
@@ -9,7 +10,7 @@
  * that is bundled with this package in the file LICENSE.txt.
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
- *
+ * 
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade
@@ -22,22 +23,23 @@
  * @copyright  Copyright (C) 2012 Vladimir Fishchenko (http://fishchenko.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
--->
-<layout>
-    <adminhtml_menu_index>
-        <reference name="content">
-            <block type="menu/adminhtml_menu" name="menu_grid_container" />
-        </reference>
-    </adminhtml_menu_index>
 
-    <adminhtml_menu_edit>
-        <reference name="content">
-            <block type="menu/adminhtml_menu_edit" name="menu_edit_container" />
-        </reference>
-    </adminhtml_menu_edit>
+/**
+ * @var $this Mage_Core_Model_Resource_Setup
+ */
 
-    <adminhtml_menu_grid>
-        <remove name="root" />
-        <block type="menu/adminhtml_menu_grid" name="menu_grid" output="toHtml" />
-    </adminhtml_menu_grid>
-</layout>
+$installer = $this;
+$installer->startSetup();
+
+$installer->run("
+CREATE TABLE {$installer->getTable('menu/menu')} (
+  `item_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `label` varchar(255) NOT NULL DEFAULT '',
+  `title` varchar(255) NOT NULL DEFAULT '',
+  `url` varchar(255) NOT NULL DEFAULT '',
+  `position` tinyint(4) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+");
+
+$installer->endSetup();
