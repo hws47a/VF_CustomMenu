@@ -61,14 +61,13 @@ class VF_CustomMenu_Block_Adminhtml_Menu_Edit_Form extends Mage_Adminhtml_Block_
             'name'      => 'label'
         ));
 
-        /** @var Varien_Data_Form_Element_Select */
-        var_dump(get_class($fieldSet->addField('type', 'select', array(
+        $fieldSet->addField('type', 'select', array(
             'label'     => $this->__('Type'),
             'class'     => 'required-entry',
             'required'  => 'true',
             'name'      => 'type',
             'options'   => VF_CustomMenu_Model_Resource_Menu_Attribute_Source_Type::getValues()
-        ))));
+        ));
 
         $fieldSet->addField('url', 'text', array(
             'label'     => $this->__('Url'),
