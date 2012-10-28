@@ -60,4 +60,19 @@ class VF_CustomMenu_Model_Menu extends Mage_Core_Model_Abstract
         }
         return $category;
     }
+
+    /**
+     * @return Mage_Catalog_Model_Category
+     */
+    public function getCategory()
+    {
+        if (!$this->hasData('category_object')) {
+            $category = Mage::getModel('catalog/category');
+            if ($this->getDefaultCategory()) {
+                $category->load($this->getDefaultCategory());
+            }
+            $this->setData('category_object', $category);
+        }
+        return $this->getData('category_object');
+    }
 }

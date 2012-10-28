@@ -1,16 +1,13 @@
 A custom magento menu
 
 Replace generated magento menu with own custom menu.
-Use admin page to add menu items (name, title, link, position)
+Use admin page to add menu items "Custom Modules -> Custom Menu"
 
-Also you can show in menu popup links to layered navigation for some attribute
-You can choose attribute and default category. In menu popup you will see 
-all attribute options that you see in layered navigation for this category
+You can choose from this types of menu items:
+* Internal link (Example: about-us.html)
+* External link (Example: http://example.com)
+* Category (Select a category to show its link)
+* Attribute Values (Select a category and attribute, to show attribute values for this category from layered navigation)
 
-Usage:
-
-go to "Custom Modules -> Custom Menu" and add items to menu
-
-Install:
 
 Read about installation in INSTALL file

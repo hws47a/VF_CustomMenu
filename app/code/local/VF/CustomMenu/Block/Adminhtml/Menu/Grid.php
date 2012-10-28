@@ -65,45 +65,39 @@ class VF_CustomMenu_Block_Adminhtml_Menu_Grid extends Mage_Adminhtml_Block_Widge
     protected function _prepareColumns()
     {
         $this->addColumn('item_id', array(
-            'header'    =>  $this->__('ID'),
-            'align'     =>  'right',
-            'width'     =>  '50px',
-            'type'      =>  'int',
-            'index'     =>  'item_id'
+            'header'    => $this->__('ID'),
+            'align'     => 'right',
+            'width'     => '50px',
+            'type'      => 'int',
+            'index'     => 'item_id'
         ));
 
         $this->addColumn('label', array(
-            'header'    =>  $this->__('Label'),
-            'align'     =>  'left',
-            'index'     =>  'label'
+            'header'    => $this->__('Label'),
+            'align'     => 'left',
+            'index'     => 'label'
         ));
 
-        $this->addColumn('url', array(
-            'header'    =>  $this->__('Url'),
-            'align'     =>  'left',
-            'index'     =>  'url'
+        $this->addColumn('type', array(
+            'header'    => $this->__('Type'),
+            'align'     => 'left',
+            'index'     => 'type',
+            'type'      => 'options',
+            'options'   => VF_CustomMenu_Model_Resource_Menu_Attribute_Source_Type::getValues()
         ));
 
-        $this->addColumn('title', array(
-            'header'    =>  $this->__('Title'),
-            'align'     =>  'left',
-            'index'     =>  'title'
-        ));
-
-        $this->addColumn('source_attribute', array(
-            'header'    =>  $this->__('Source Attribute'),
-            'align'     =>  'left',
-            'width'     =>  '50px',
-            'index'     =>  'source_attribute',
-            'type'      =>  'options',
-            'options'    =>  Mage::getModel('menu/attribute')->getOptions()
+        $this->addColumn('info', array(
+            'header'    => $this->__('Info'),
+            'align'     => 'left',
+            'index'     => 'info',
+            'renderer'  => 'VF_CustomMenu_Block_Adminhtml_Menu_Grid_Renderer_Info'
         ));
 
         $this->addColumn('position', array(
-            'header'    =>  $this->__('Position'),
-            'align'     =>  'left',
-            'width'     =>  '50px',
-            'index'     =>  'position'
+            'header'    => $this->__('Position'),
+            'align'     => 'left',
+            'width'     => '50px',
+            'index'     => 'position'
         ));
 
         return parent::_prepareColumns();

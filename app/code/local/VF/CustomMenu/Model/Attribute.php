@@ -32,6 +32,11 @@
  */
 class VF_CustomMenu_Model_Attribute
 {
+    /**
+     * get ln attributes
+     *
+     * @return array
+     */
     public function getSourceAttributes()
     {
         $values = array(array('label' => '', 'value' => ''));
@@ -50,6 +55,11 @@ class VF_CustomMenu_Model_Attribute
         return array_values($values);
     }
 
+    /**
+     * get as options
+     *
+     * @return array
+     */
     public function getOptions()
     {
         $options = array();

@@ -31,6 +31,9 @@
     </adminhtml_menu_index>
 
     <adminhtml_menu_edit>
+        <reference name="head">
+            <action method="addJs"><file>custom-menu/admin.js</file></action>
+        </reference>
         <reference name="content">
             <block type="menu/adminhtml_menu_edit" name="menu_edit_container" />
         </reference>

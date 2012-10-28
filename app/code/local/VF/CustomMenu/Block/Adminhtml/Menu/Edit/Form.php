@@ -61,6 +61,15 @@ class VF_CustomMenu_Block_Adminhtml_Menu_Edit_Form extends Mage_Adminhtml_Block_
             'name'      => 'label'
         ));
 
+        /** @var Varien_Data_Form_Element_Select */
+        var_dump(get_class($fieldSet->addField('type', 'select', array(
+            'label'     => $this->__('Type'),
+            'class'     => 'required-entry',
+            'required'  => 'true',
+            'name'      => 'type',
+            'options'   => VF_CustomMenu_Model_Resource_Menu_Attribute_Source_Type::getValues()
+        ))));
+
         $fieldSet->addField('url', 'text', array(
             'label'     => $this->__('Url'),
             'class'     => 'required-entry',
@@ -101,7 +110,7 @@ class VF_CustomMenu_Block_Adminhtml_Menu_Edit_Form extends Mage_Adminhtml_Block_
         }
 
         $fieldSet->addField('default_category', 'select', array(
-            'label'     => $this->__('Default Category'),
+            'label'     => $this->__('Category'),
             'name'      => 'default_category',
             'note'      => $this->__('Custom default category'),
             'values'    => $values

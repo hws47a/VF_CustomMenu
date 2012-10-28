@@ -74,16 +74,36 @@ class VF_CustomMenu_Block_Navigation extends Mage_Core_Block_Template
     public function getItemUrl(VF_CustomMenu_Model_Menu $item)
     {
         $url = ltrim($item->getUrl());
-        return (strpos($url, 'javascript:') === false) ? Mage::getBaseUrl() . $url : $url;
+        switch ($item->getType()) {
+            case VF_CustomMenu_Model_Resource_Menu_Attribute_Source_Type::LINK_INTERNAL:
+                return Mage::getBaseUrl() . $url;
+            case VF_CustomMenu_Model_Resource_Menu_Attribute_Source_Type::LINK_EXTERNAL:
+                return $url;
+            case VF_CustomMenu_Model_Resource_Menu_Attribute_Source_Type::CATEGORY:
+                return $item->getCategory()->getUrl();
+            case VF_CustomMenu_Model_Resource_Menu_Attribute_Source_Type::ATTRIBUTE:
+                return 'javascript:;';
+            default:
+                return $url;
+        }
     }
 
+    /**
+     * get Dynamic block
+     * It's a attribute values or child categories
+     *
+     * @param VF_CustomMenu_Model_Menu $item
+     * @param int $itemNumber
+     * @return mixed
+     */
     public function getDynamicBlock(VF_CustomMenu_Model_Menu $item, $itemNumber = null)
     {
         if (!$item->hasData('dynamic_block')) {
             $block = '';
             if ($item->getSourceAttribute()) {
                 /** @var $attribute Mage_Catalog_Model_Resource_Eav_Attribute */
-                $attribute = Mage::getSingleton('eav/config')->getAttribute('catalog_product', $item->getSourceAttribute());
+                $attribute = Mage::getSingleton('eav/config')
+                    ->getAttribute('catalog_product', $item->getSourceAttribute());
 
                 /** @var $catalogIndexAttribute Mage_CatalogIndex_Model_Attribute */
                 $catalogIndexAttribute = Mage::getSingleton('catalogindex/attribute');
@@ -136,7 +156,8 @@ class VF_CustomMenu_Block_Navigation extends Mage_Core_Block_Template
                                 $href = $rootCategory->getUrl() . '?' . http_build_query($params['_query']);
                             }
 
-                            $block .= "<li{$class}><a href=\"{$href}\"><span>{$this->escapeHtml($_item['label'])}</span></a></li>";
+                            $block .= "<li{$class}><a href=\"{$href}\">"
+                                . "<span>{$this->escapeHtml($_item['label'])}</span></a></li>";
                         }
                         $block .= "</ul>\n";
                     }
