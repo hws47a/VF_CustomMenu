@@ -39,15 +39,14 @@ $i = 0;
     <ul id="nav">
         <?php foreach ($_menu as $_menuItem): ?>
         <?php $additionalClass = ++$i == 1 ? ' first' : (($i == $_count) ? ' last' : '') ?>
-        <li class="level0 level-top nav<?php echo $i . $additionalClass ?>">
-            <a title="<?php echo $this->escapeHtml($_menuItem->getTitle()) ?>" href="<?php echo $this->escapeUrl($this->getItemUrl($_menuItem)) ?>" class="level-top">
-                <span><?php echo $this->escapeHtml($_menuItem->getLabel()) ?></span>
+        <li class="level0 level-top nav-<?php echo $i . $additionalClass ?>">
+            <a
+                    title="<?php echo $this->escapeHtml($_menuItem->getTitle()) ?>"
+                    href="<?php echo $this->escapeUrl($this->getItemUrl($_menuItem)) ?>"
+                    class="level-top"
+                    ><span><?php echo $this->escapeHtml($_menuItem->getLabel()) ?></span>
             </a>
-            <?php if ($this->getDynamicBlock($_menuItem)): ?>
-            <div class="menuPopup">
-                <?php echo $this->getDynamicBlock($_menuItem) ?>
-            </div>
-            <?php endif ?>
+            <?php echo $this->getDynamicBlock($_menuItem, $i) ?>
         </li>
         <?php endforeach ?>
     </ul>

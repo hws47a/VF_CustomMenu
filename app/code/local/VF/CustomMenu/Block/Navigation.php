@@ -1,14 +1,14 @@
-<?php 
+<?php
 /**
  * VF extension for Magento
  *
  * NOTICE OF LICENSE
- * 
+ *
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is bundled with this package in the file LICENSE.txt.
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
- * 
+ *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade
@@ -35,8 +35,8 @@ class VF_CustomMenu_Block_Navigation extends Mage_Core_Block_Template
     protected function _construct()
     {
         $this->addData(array(
-            'cache_lifetime'    => 86400,
-            'cache_tags'        => array(Mage_Catalog_Model_Category::CACHE_TAG, Mage_Core_Model_Store_Group::CACHE_TAG),
+            'cache_lifetime' => 86400,
+            'cache_tags' => array(Mage_Catalog_Model_Category::CACHE_TAG, Mage_Core_Model_Store_Group::CACHE_TAG),
         ));
     }
 
@@ -68,7 +68,7 @@ class VF_CustomMenu_Block_Navigation extends Mage_Core_Block_Template
     /**
      * get item url
      *
-     * @param \VF_CustomMenu_Model_Menu $item
+     * @param VF_CustomMenu_Model_Menu $item
      * @return string
      */
     public function getItemUrl(VF_CustomMenu_Model_Menu $item)
@@ -77,58 +77,73 @@ class VF_CustomMenu_Block_Navigation extends Mage_Core_Block_Template
         return (strpos($url, 'javascript:') === false) ? Mage::getBaseUrl() . $url : $url;
     }
 
-    public function getDynamicBlock(VF_CustomMenu_Model_Menu $item) {
-        $block = '';
-        if ($item->getSourceAttribute()) {
-            /** @var $attribute Mage_Catalog_Model_Resource_Eav_Attribute */
-            $attribute = Mage::getSingleton('eav/config')->getAttribute('catalog_product', $item->getSourceAttribute());
+    public function getDynamicBlock(VF_CustomMenu_Model_Menu $item, $itemNumber = null)
+    {
+        if (!$item->hasData('dynamic_block')) {
+            $block = '';
+            if ($item->getSourceAttribute()) {
+                /** @var $attribute Mage_Catalog_Model_Resource_Eav_Attribute */
+                $attribute = Mage::getSingleton('eav/config')->getAttribute('catalog_product', $item->getSourceAttribute());
 
-            /** @var $catalogIndexAttribute Mage_CatalogIndex_Model_Attribute */
-            $catalogIndexAttribute =  Mage::getSingleton('catalogindex/attribute');
-            /** @var $rootCategory Mage_Catalog_Model_Category */
-            $rootCategory = Mage::getModel('catalog/category')->load($item->getDefaultCategoryId());
-            $entityFilter = $rootCategory->getProductCollection()->getSelect()->distinct();
-            $activeOptions = array_keys($catalogIndexAttribute->getCount($attribute, $entityFilter));
-            if ($attribute->usesSource()) {
-                $allOptions = $attribute->getSource()->getAllOptions(false);
-                $items = array();
-                foreach ($allOptions as $_option) {
-                    if (in_array($_option['value'], $activeOptions)) {
-                        $items[] = $_option;
-                    }
-                }
-                if (!empty($items)) {
-                    $block .= "<ul>\n";
-                    $odd = false;
-                    foreach ($items as $_item) {
-                        $class = ($odd) ? 'odd' : 'even';
-                        $odd ^= 1;
-                        $class = " class=\"$class\"";
-
-                        $route = 'catalog/category/view';
-                        $params = array(
-                            'id' => $rootCategory->getId(),
-                            '_query' => array($attribute->getAttributeCode() => $_item['value']),
-                            '_use_rewrite' => true,
-                        );
-
-                        $result = new Varien_Object();
-                        Mage::dispatchEvent(
-                            'custom_menu_popup_update_item_url',
-                            array('route' => $route, 'params' => $params, 'result' => $result)
-                        );
-                        if ($result->getUrl()) {
-                            $href = $result->getUrl();
-                        } else {
-                            $href = $rootCategory->getUrl() . '?' . http_build_query($params['_query']);
+                /** @var $catalogIndexAttribute Mage_CatalogIndex_Model_Attribute */
+                $catalogIndexAttribute = Mage::getSingleton('catalogindex/attribute');
+                /** @var $rootCategory Mage_Catalog_Model_Category */
+                $rootCategory = Mage::getModel('catalog/category')->load($item->getDefaultCategoryId());
+                $entityFilter = $rootCategory->getProductCollection()->getSelect()->distinct();
+                $activeOptions = array_keys($catalogIndexAttribute->getCount($attribute, $entityFilter));
+                if ($attribute->usesSource()) {
+                    $allOptions = $attribute->getSource()->getAllOptions(false);
+                    $items = array();
+                    foreach ($allOptions as $_option) {
+                        if (in_array($_option['value'], $activeOptions)) {
+                            $items[] = $_option;
                         }
-
-                        $block .= "<li{$class}><a href=\"{$href}\">{$this->escapeHtml($_item['label'])}</a></li>";
                     }
-                    $block .= "</ul>\n";
+                    if (!empty($items)) {
+                        $block .= "<ul class='level0'>\n";
+                        $odd = false;
+                        $i = 0;
+                        $count = count($items);
+                        foreach ($items as $_item) {
+                            ++$i;
+                            $class = ($odd) ? 'odd' : 'even';
+                            if ($itemNumber) {
+                                $class .= ' nav-' . $itemNumber . '-' . $i;
+                            }
+                            if ($i == 1) {
+                                $class .= ' first';
+                            } elseif ($i == $count) {
+                                $class .= ' last';
+                            }
+                            $odd ^= 1;
+                            $class = " class=\"level1 $class\"";
+
+                            $route = 'catalog/category/view';
+                            $params = array(
+                                'id' => $rootCategory->getId(),
+                                '_query' => array($attribute->getAttributeCode() => $_item['value']),
+                                '_use_rewrite' => true,
+                            );
+
+                            $result = new Varien_Object();
+                            Mage::dispatchEvent(
+                                'custom_menu_popup_update_item_url',
+                                array('route' => $route, 'params' => $params, 'result' => $result)
+                            );
+                            if ($result->getUrl()) {
+                                $href = $result->getUrl();
+                            } else {
+                                $href = $rootCategory->getUrl() . '?' . http_build_query($params['_query']);
+                            }
+
+                            $block .= "<li{$class}><a href=\"{$href}\"><span>{$this->escapeHtml($_item['label'])}</span></a></li>";
+                        }
+                        $block .= "</ul>\n";
+                    }
                 }
             }
+            $item->setData('dynamic_block', $block);
         }
-        return $block;
+        return $item->getData('dynamic_block');
     }
 }
