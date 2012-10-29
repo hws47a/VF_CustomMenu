@@ -41,6 +41,14 @@ class VF_CustomMenu_Block_Adminhtml_Menu_Edit extends Mage_Adminhtml_Block_Widge
         $this->_objectId = 'id';
         $this->_blockGroup = 'menu';
         $this->_controller = 'adminhtml_menu';
+
+        $this->_addButton('save_and_continue', array(
+            'label'     => Mage::helper('adminhtml')->__('Save And Continue Edit'),
+            'onclick'   => 'saveAndContinueEdit()',
+            'class'     => 'save',
+        ), -100);
+
+        $this->_formScripts[] = "function saveAndContinueEdit(){editForm.submit($('edit_form').action+'back/edit/')}";
     }
 
     /**

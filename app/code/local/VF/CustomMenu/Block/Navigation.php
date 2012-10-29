@@ -89,82 +89,146 @@ class VF_CustomMenu_Block_Navigation extends Mage_Core_Block_Template
     }
 
     /**
-     * get Dynamic block
-     * It's a attribute values or child categories
+     * get dynamic block html for current item
      *
      * @param VF_CustomMenu_Model_Menu $item
-     * @param int $itemNumber
+     * @param null $itemNumber
      * @return mixed
      */
     public function getDynamicBlock(VF_CustomMenu_Model_Menu $item, $itemNumber = null)
     {
         if (!$item->hasData('dynamic_block')) {
             $block = '';
-            if ($item->getSourceAttribute()) {
-                /** @var $attribute Mage_Catalog_Model_Resource_Eav_Attribute */
-                $attribute = Mage::getSingleton('eav/config')
-                    ->getAttribute('catalog_product', $item->getSourceAttribute());
-
-                /** @var $catalogIndexAttribute Mage_CatalogIndex_Model_Attribute */
-                $catalogIndexAttribute = Mage::getSingleton('catalogindex/attribute');
-                /** @var $rootCategory Mage_Catalog_Model_Category */
-                $rootCategory = Mage::getModel('catalog/category')->load($item->getDefaultCategoryId());
-                $entityFilter = $rootCategory->getProductCollection()->getSelect()->distinct();
-                $activeOptions = array_keys($catalogIndexAttribute->getCount($attribute, $entityFilter));
-                if ($attribute->usesSource()) {
-                    $allOptions = $attribute->getSource()->getAllOptions(false);
-                    $items = array();
-                    foreach ($allOptions as $_option) {
-                        if (in_array($_option['value'], $activeOptions)) {
-                            $items[] = $_option;
-                        }
+            switch ($item->getType()) {
+                case VF_CustomMenu_Model_Resource_Menu_Attribute_Source_Type::ATTRIBUTE:
+                    $items = $this->_getAttributeValueItems($item);
+                    $block = $this->_getDynamicBlockList($items, $itemNumber);
+                    break;
+                case VF_CustomMenu_Model_Resource_Menu_Attribute_Source_Type::CATEGORY:
+                    if ($item->getShowChildren()) {
+                        $items = $this->_getCategoryItems($item);
+                        $block = $this->_getDynamicBlockList($items, $itemNumber);
                     }
-                    if (!empty($items)) {
-                        $block .= "<ul class='level0'>\n";
-                        $odd = false;
-                        $i = 0;
-                        $count = count($items);
-                        foreach ($items as $_item) {
-                            ++$i;
-                            $class = ($odd) ? 'odd' : 'even';
-                            if ($itemNumber) {
-                                $class .= ' nav-' . $itemNumber . '-' . $i;
-                            }
-                            if ($i == 1) {
-                                $class .= ' first';
-                            } elseif ($i == $count) {
-                                $class .= ' last';
-                            }
-                            $odd ^= 1;
-                            $class = " class=\"level1 $class\"";
-
-                            $route = 'catalog/category/view';
-                            $params = array(
-                                'id' => $rootCategory->getId(),
-                                '_query' => array($attribute->getAttributeCode() => $_item['value']),
-                                '_use_rewrite' => true,
-                            );
-
-                            $result = new Varien_Object();
-                            Mage::dispatchEvent(
-                                'custom_menu_popup_update_item_url',
-                                array('route' => $route, 'params' => $params, 'result' => $result)
-                            );
-                            if ($result->getUrl()) {
-                                $href = $result->getUrl();
-                            } else {
-                                $href = $rootCategory->getUrl() . '?' . http_build_query($params['_query']);
-                            }
-
-                            $block .= "<li{$class}><a href=\"{$href}\">"
-                                . "<span>{$this->escapeHtml($_item['label'])}</span></a></li>";
-                        }
-                        $block .= "</ul>\n";
-                    }
-                }
+                    break;
             }
             $item->setData('dynamic_block', $block);
         }
         return $item->getData('dynamic_block');
+    }
+
+    /**
+     * get category children array with 'label' and 'href'
+     *
+     * @param VF_CustomMenu_Model_Menu $item
+     * @return array
+     */
+    protected function _getCategoryItems(VF_CustomMenu_Model_Menu $item)
+    {
+        $items = array();
+        /** @var $category Mage_Catalog_Model_Category */
+        $category = Mage::getModel('catalog/category')->load($item->getDefaultCategory());
+        if ($category->getId()) {
+            $categories = $category->getChildrenCategories();
+            $items = array();
+            $level = $category->getLevel() + 1;
+            foreach ($categories as $_category) {
+                if ($_category->getLevel() == $level) {
+                    $items[] = array(
+                        'label' => $_category->getName(),
+                        'href' => $_category->getUrl()
+                    );
+                }
+            }
+        }
+        return $items;
+    }
+
+    /**
+     * get attribute values array with 'label' and 'href'
+     *
+     * @param VF_CustomMenu_Model_Menu $item
+     * @return array
+     */
+    protected function _getAttributeValueItems(VF_CustomMenu_Model_Menu $item)
+    {
+        $items = array();
+        if ($item->getSourceAttribute()) {
+            /** @var $attribute Mage_Catalog_Model_Resource_Eav_Attribute */
+            $attribute = Mage::getSingleton('eav/config')
+                ->getAttribute('catalog_product', $item->getSourceAttribute());
+
+            /** @var $indexAttribute Mage_CatalogIndex_Model_Attribute */
+            $indexAttribute = Mage::getSingleton('catalogindex/attribute');
+            /** @var $rootCategory Mage_Catalog_Model_Category */
+            $rootCategory = Mage::getModel('catalog/category')->load($item->getDefaultCategoryId());
+            $entityFilter = $rootCategory->getProductCollection()->getSelect()->distinct();
+            $activeOptions = array_keys($indexAttribute->getCount($attribute, $entityFilter));
+            if ($attribute->usesSource()) {
+                $allOptions = $attribute->getSource()->getAllOptions(false);
+                foreach ($allOptions as $_option) {
+                    if (in_array($_option['value'], $activeOptions)) {
+
+                        $route = 'catalog/category/view';
+                        $params = array(
+                            'id' => $rootCategory->getId(),
+                            '_query' => array($attribute->getAttributeCode() => $_option['value']),
+                            '_use_rewrite' => true,
+                        );
+
+                        $result = new Varien_Object();
+                        Mage::dispatchEvent(
+                            'custom_menu_popup_update_item_url',
+                            array('route' => $route, 'params' => $params, 'result' => $result)
+                        );
+                        if ($result->getUrl()) {
+                            $href = $result->getUrl();
+                        } else {
+                            $href = $rootCategory->getUrl() . '?' . http_build_query($params['_query']);
+                        }
+                        $_option['href'] = $href;
+
+                        $items[] = $_option;
+                    }
+                }
+            }
+        }
+        return $items;
+    }
+
+    /**
+     * render a list for add to menu popup
+     *
+     * @param $items array items to show with 'label' and 'href'
+     * @param $itemNumber int it is added to 'nav' class
+     * @return string
+     */
+    protected function _getDynamicBlockList($items, $itemNumber)
+    {
+        $block = '';
+        if (!empty($items)) {
+            $block .= "<ul class='level0'>\n";
+            $odd = false;
+            $index = 0;
+            $count = count($items);
+            foreach ($items as $_item) {
+                ++$index;
+                $class = ($odd) ? 'odd' : 'even';
+                if ($itemNumber) {
+                    $class .= ' nav-' . $itemNumber . '-' . $index;
+                }
+                if ($index == 1) {
+                    $class .= ' first';
+                } elseif ($index == $count) {
+                    $class .= ' last';
+                }
+                $odd ^= 1;
+                $class = " class=\"level1 $class\"";
+
+                $block .= "<li{$class}><a href=\"{$_item['href']}\">"
+                    . "<span>{$this->escapeHtml($_item['label'])}</span></a></li>";
+            }
+            $block .= "</ul>\n";
+        }
+        return $block;
     }
 }

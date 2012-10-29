@@ -109,6 +109,7 @@ class VF_CustomMenu_Adminhtml_MenuController extends Mage_Adminhtml_Controller_A
         $error = false;
 
         if ($data = $this->getRequest()->getPost()) {
+            $data['show_children'] = isset($data['show_children']);
             $model = Mage::getModel('menu/menu');
 
             $menuId = intval($this->getRequest()->getParam('id', 0));

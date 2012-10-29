@@ -71,8 +71,6 @@ class VF_CustomMenu_Block_Adminhtml_Menu_Edit_Form extends Mage_Adminhtml_Block_
 
         $fieldSet->addField('url', 'text', array(
             'label'     => $this->__('Url'),
-            'class'     => 'required-entry',
-            'required'  => true,
             'name'      => 'url',
             'note'      => $this->__(
                 'Url without base url. Example: for url link http://www.domain.com/test-page.html use test-page.html'
@@ -116,6 +114,17 @@ class VF_CustomMenu_Block_Adminhtml_Menu_Edit_Form extends Mage_Adminhtml_Block_
         ));
 
         $data = Mage::registry('current_menu');
+        $showChildren = false;
+        if ($data) {
+            $showChildren = $data->getShowChildren();
+        }
+
+        $fieldSet->addField('show_children', 'checkbox', array(
+            'label'     => $this->__('Show Children'),
+            'name'      => 'show_children',
+            'checked'   => $showChildren
+        ));
+
         if ($data) {
             $form->setValues($data->getData());
         }

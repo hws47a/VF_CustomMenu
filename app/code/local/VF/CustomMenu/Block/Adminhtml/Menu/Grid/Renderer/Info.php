@@ -51,7 +51,9 @@ class VF_CustomMenu_Block_Adminhtml_Menu_Grid_Renderer_Info
                 break;
             case VF_CustomMenu_Model_Resource_Menu_Attribute_Source_Type::CATEGORY:
                 return '<strong>' . $helper->__('Category') . ':</strong> '
-                    . Mage::getModel('catalog/category')->load($row->getDefaultCategory(), array('name'))->getName();
+                    . Mage::getModel('catalog/category')->load($row->getDefaultCategory(), array('name'))->getName()
+                    . ' <strong>' . $helper->__('Show Children') . ':</strong> '
+                    . ($row->getShowChildren() ? $helper->__('Yes') : $helper->__('No'));
                 break;
             case VF_CustomMenu_Model_Resource_Menu_Attribute_Source_Type::ATTRIBUTE:
                 return '<strong>' . $helper->__('Attribute code') . ':</strong> '
