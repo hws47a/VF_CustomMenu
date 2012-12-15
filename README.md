@@ -14,4 +14,6 @@ Read about installation in [INSTALL](https://github.com/hws47a/VF_CustomMenu/blo
 
 More info:
 * Menu is cached by the 'Block HTML' cache;
-* Extension doesn't support a separate edit data for multiple stores
+* Extension doesn't support a separate edit data for multiple stores  
+  
+CURRENTLY IT WORKS ON 1 MY PROJECT
