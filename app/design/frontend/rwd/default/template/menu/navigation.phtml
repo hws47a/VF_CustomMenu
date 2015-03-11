@@ -17,8 +17,8 @@
  * please refer to http://www.magentocommerce.com for more information.
  *
  * @category    design
- * @package     base_default
- * @copyright   Copyright (C) 2012 Vladimir Fishchenko (http://fishchenko.com)
+ * @package     rwd_default
+ * @copyright   Copyright (C) 2015 Vladimir Fishchenko (http://fishchenko.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 ?>
@@ -39,14 +39,16 @@ $i = 0;
     <ol class="nav-primary">
         <?php foreach ($_menu as $_menuItem): ?>
         <?php $additionalClass = ++$i == 1 ? ' first' : (($i == $_count) ? ' last' : '') ?>
+        <?php $dynamicBlock = $this->getDynamicBlock($_menuItem, $i) ?>
+        <?php if ($dynamicBlock) { $additionalClass .= ' parent'; } ?>
         <li class="level0 nav-<?php echo $i . $additionalClass ?>">
             <a
                     title="<?php echo $this->escapeHtml($_menuItem->getTitle()) ?>"
                     href="<?php echo $this->escapeUrl($this->getItemUrl($_menuItem)) ?>"
-                    class="level0"
+                    class="level0<?php echo $dynamicBlock ? ' has-children' : '' ?>"
                     ><span><?php echo $this->escapeHtml($_menuItem->getLabel()) ?></span>
             </a>
-            <?php echo $this->getDynamicBlock($_menuItem, $i) ?>
+            <?php echo $dynamicBlock ?>
         </li>
         <?php endforeach ?>
     </ol>
