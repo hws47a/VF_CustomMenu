@@ -39,10 +39,11 @@ $i = 0;
     <ol class="nav-primary">
         <?php foreach ($_menu as $_menuItem): ?>
         <?php $additionalClass = ++$i == 1 ? ' first' : (($i == $_count) ? ' last' : '') ?>
-        <li class="level0 level-top nav-<?php echo $i . $additionalClass ?>">
+        <li class="level0 nav-<?php echo $i . $additionalClass ?>">
             <a
                     title="<?php echo $this->escapeHtml($_menuItem->getTitle()) ?>"
                     href="<?php echo $this->escapeUrl($this->getItemUrl($_menuItem)) ?>"
+                    class="level0"
                     ><span><?php echo $this->escapeHtml($_menuItem->getLabel()) ?></span>
             </a>
             <?php echo $this->getDynamicBlock($_menuItem, $i) ?>

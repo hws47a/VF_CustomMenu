@@ -80,7 +80,11 @@ class VF_CustomMenu_Block_Navigation extends Mage_Core_Block_Template
             case VF_CustomMenu_Model_Resource_Menu_Attribute_Source_Type::LINK_EXTERNAL:
                 return $url;
             case VF_CustomMenu_Model_Resource_Menu_Attribute_Source_Type::CATEGORY:
-                return $item->getCategory()->getUrl();
+                if ($item->getCategory()->getId() != Mage::app()->getStore()->getRootCategoryId()) {
+                    return $item->getCategory()->getUrl();
+                } else {
+                    return 'javascript:;';
+                }
             case VF_CustomMenu_Model_Resource_Menu_Attribute_Source_Type::ATTRIBUTE:
                 return 'javascript:;';
             default:
