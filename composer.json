@@ -1,0 +1,16 @@
+{
+    "name": "hws47a/custom-menu",
+    "description": "Replace generated magento menu with own custom menu. Use admin page to add menu items.",
+    "license": "OSL 3.0",
+    "type":"magento-module",
+    "homepage":"https://github.com/hws47a/VF_CustomMenu",
+    "authors": [
+        {
+            "name": "Vladimir Fishchenko",
+            "email": "hws47a@gmail.com"
+        }
+    ],
+    "require": {
+        "magento-hackathon/magento-composer-installer":"*"
+    }
+}
