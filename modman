@@ -1,5 +1,6 @@
 app/code/local/VF/CustomMenu app/code/local/VF/CustomMenu
 app/design/adminhtml/default/default/layout/menu.xml app/design/adminhtml/default/default/layout/menu.xml
 app/design/frontend/base/default/template/menu app/design/frontend/base/default/template/menu
+app/design/frontend/rwd/default/template/menu app/design/frontend/rwd/default/template/menu
 app/etc/modules/VF_CustomMenu.xml app/etc/modules/VF_CustomMenu.xml
 js/custom-menu js/custom-menu
