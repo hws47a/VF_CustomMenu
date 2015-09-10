@@ -41,10 +41,12 @@ class VF_CustomMenu_Model_Attribute
     {
         $values = array(array('label' => '', 'value' => ''));
         /** @var $layer Mage_Catalog_Model_Layer */
-        Mage::app()->setCurrentStore(Mage_Core_Model_Store::DEFAULT_CODE);
+        $appEmulation = Mage::getSingleton('core/app_emulation');
+        $defaultFrontendStore = Mage::app()->getDefaultStoreView();
+        $initialEnvironmentInfo = $appEmulation->startEnvironmentEmulation($defaultFrontendStore->getId());
         $layer = Mage::getModel('catalog/layer');
         $attributes = $layer->getFilterableAttributes();
-        Mage::app()->setCurrentStore(Mage_Core_Model_Store::ADMIN_CODE);
+        $appEmulation->stopEnvironmentEmulation($initialEnvironmentInfo);
         foreach ($attributes as $_attribute) {
             $values[$_attribute->getAttributeCode()] = array(
                 'label' => $_attribute->getFrontendLabel(),
